@@ -1,0 +1,61 @@
+/* Custom styles for Hawler Restaurant website */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary-gold: #D4AF37;
+  --primary-gold-hover: #B89628;
+  --dark-bg: #12100E;
+  --card-bg: #1C1917;
+  --accent-red: #8B0000;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--dark-bg);
+  color: #F5F5F4;
+}
+
+.arabic-font {
+  font-family: 'Amiri', serif;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FDE68A 0%, #D4AF37 50%, #9A7B1C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.gold-border:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+}
+
+.glass-card {
+  background: rgba(28, 25, 23, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.hero-overlay {
+  background: linear-gradient(180deg, rgba(18, 16, 14, 0.5) 0%, rgba(18, 16, 14, 0.95) 100%);
+}
+
+.nav-blur {
+  background: rgba(18, 16, 14, 0.85);
+  backdrop-filter: blur(16px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #12100E;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
