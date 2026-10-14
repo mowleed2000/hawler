@@ -211,7 +211,7 @@
 
     categories.forEach((cat) => {
       const section = document.createElement('section');
-      section.className = 'menu-section reveal';
+      section.className = 'menu-section';
       section.id = cat.id;
 
       const withImages = cat.items.filter((i) => i.image);
