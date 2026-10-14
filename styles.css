@@ -1,5 +1,5 @@
 /* Hawler Restaurant — premium charcoal & copper system */
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Figtree:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap');
 
 :root {
   --charcoal: #14110f;
@@ -9,15 +9,15 @@
   --bone: #ede6d9;
   --bone-deep: #e0d6c4;
   --ink: #1a1612;
-  --ember: #d4622a;
-  --ember-hot: #e8783a;
-  --ember-deep: #a8481c;
+  --ember: #c45a28;
+  --ember-hot: #d96a34;
+  --ember-deep: #9a3f18;
   --copper: #b87333;
   --cream-text: #f5efe6;
   --muted: #a89f94;
   --line: rgba(237, 230, 217, 0.12);
   --line-dark: rgba(26, 22, 18, 0.12);
-  --font-brand: 'Syne', sans-serif;
+  --font-brand: 'Oswald', sans-serif;
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Figtree', sans-serif;
   --font-arabic: 'Amiri', serif;
@@ -104,8 +104,8 @@ ul {
 /* ——— Type ——— */
 .brand-mark {
   font-family: var(--font-brand);
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   line-height: 1;
 }
@@ -1056,19 +1056,22 @@ ul {
 
 /* ——— Halal ribbon under hero ——— */
 .strip {
-  background: var(--ember);
-  color: #fff;
-  padding: 0.85rem 0;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  background: #0e0c0b;
+  color: var(--bone-deep);
+  padding: 0.95rem 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: center;
+  border-top: 1px solid rgba(196, 90, 40, 0.35);
+  border-bottom: 1px solid var(--line);
 }
 
 .strip span {
-  opacity: 0.55;
-  margin: 0 0.75rem;
+  color: var(--ember);
+  margin: 0 0.85rem;
+  opacity: 1;
 }
 
 @media (max-width: 600px) {
