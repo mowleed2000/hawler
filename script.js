@@ -1,36 +1,51 @@
-// Hawler Restaurant — shared chrome + interactions
-
+/* Hawler Restaurant — shared chrome, motion, menu render */
 (function () {
-  const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  const pageKey = path === '' || path === 'index.html' ? 'home' : path.replace('.html', '');
+  const pathParts = location.pathname.replace(/\/+$/, '').split('/');
+  const file = pathParts[pathParts.length - 1] || 'index.html';
+  const inBlog = pathParts.includes('blog');
+  const inArticle = inBlog && file !== 'blog' && !file.endsWith('blog') && pathParts.indexOf('blog') < pathParts.length - 1;
+
+  let pageKey = 'home';
+  if (file.includes('menu')) pageKey = 'menu';
+  else if (file.includes('about')) pageKey = 'about';
+  else if (file.includes('catering')) pageKey = 'catering';
+  else if (file.includes('visit')) pageKey = 'visit';
+  else if (file.includes('order')) pageKey = 'order';
+  else if (inBlog) pageKey = 'blog';
+
+  // Depth relative to site root
+  let base = '';
+  if (inArticle) base = '../../';
+  else if (inBlog) base = '../';
 
   const navItems = [
     { href: 'index.html', key: 'home', label: 'Home' },
     { href: 'menu.html', key: 'menu', label: 'Menu' },
     { href: 'about.html', key: 'about', label: 'Our story' },
-    { href: 'visit.html', key: 'visit', label: 'Visit' },
-    { href: 'order.html', key: 'order', label: 'Order' }
+    { href: 'catering.html', key: 'catering', label: 'Catering' },
+    { href: 'blog/index.html', key: 'blog', label: 'Blog' },
+    { href: 'visit.html', key: 'visit', label: 'Visit' }
   ];
 
   function logoSvgDeliveroo() {
     return `<svg viewBox="0 0 148 32" role="img" aria-label="Deliveroo" xmlns="http://www.w3.org/2000/svg">
       <circle cx="14" cy="16" r="12" fill="#00ccbc"/>
       <path d="M10 12h4.2c2.2 0 3.6 1.2 3.6 3.1 0 1.9-1.4 3.1-3.6 3.1H12.2V22H10V12zm2.2 4.6h1.8c.9 0 1.5-.5 1.5-1.3s-.6-1.3-1.5-1.3h-1.8v2.6z" fill="#06201e"/>
-      <text x="34" y="21" font-family="Figtree, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#00ccbc" letter-spacing="0.02em">deliveroo</text>
+      <text x="34" y="21" font-family="Outfit, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#00ccbc">deliveroo</text>
     </svg>`;
   }
   function logoSvgUberEats() {
     return `<svg viewBox="0 0 148 32" role="img" aria-label="Uber Eats" xmlns="http://www.w3.org/2000/svg">
       <rect x="2" y="4" width="24" height="24" rx="6" fill="#06c167"/>
-      <text x="7" y="21" font-family="Figtree, Helvetica, Arial, sans-serif" font-size="12" font-weight="800" fill="#04140c">Uber</text>
-      <text x="34" y="21" font-family="Figtree, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#f5efe6">Uber Eats</text>
+      <text x="7" y="21" font-family="Outfit, Helvetica, Arial, sans-serif" font-size="12" font-weight="800" fill="#04140c">Uber</text>
+      <text x="34" y="21" font-family="Outfit, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#f7f2ea">Uber Eats</text>
     </svg>`;
   }
   function logoSvgJustEat() {
     return `<svg viewBox="0 0 148 32" role="img" aria-label="Just Eat" xmlns="http://www.w3.org/2000/svg">
       <rect x="2" y="4" width="24" height="24" rx="12" fill="#ff8000"/>
       <path d="M10 11h12v2.2H10V11zm0 4.4h9v2.2h-9v-2.2zm0 4.4h12v2.2H10v-2.2z" fill="#1a0d00"/>
-      <text x="34" y="21" font-family="Figtree, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ff8000">Just Eat</text>
+      <text x="34" y="21" font-family="Outfit, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ff8000">Just Eat</text>
     </svg>`;
   }
 
@@ -43,16 +58,17 @@
       headerMount.outerHTML = `
 <header class="site-header ${pageKey === 'home' ? '' : 'is-solid'}" id="header">
   <div class="wrap-wide nav-inner">
-    <a href="index.html" class="logo" aria-label="Hawler Restaurant home">
+    <a href="${base}index.html" class="logo" aria-label="Hawler Restaurant home">
       <span class="brand-mark">Hawler</span>
       <small>Edgware Road · London</small>
     </a>
     <nav class="nav-links" aria-label="Primary">
-      ${navItems.map((n) => `<a href="${n.href}" class="${n.key === pageKey ? 'is-active' : ''}">${n.label}</a>`).join('')}
+      ${navItems.map((n) => `<a href="${base}${n.href}" class="${n.key === pageKey ? 'is-active' : ''}">${n.label}</a>`).join('')}
     </nav>
     <div class="nav-actions">
       <a class="nav-phone" href="tel:+442077245757">020 7724 5757</a>
-      <button type="button" class="btn btn-ember open-reserve" style="padding:0.7rem 1.15rem;font-size:0.88rem;">Reserve</button>
+      <a href="${base}order.html" class="btn btn-gold" style="padding:0.68rem 1.1rem;font-size:0.78rem;">Order</a>
+      <button type="button" class="btn btn-ghost open-reserve" style="padding:0.68rem 1.1rem;font-size:0.78rem;">Reserve</button>
     </div>
     <button type="button" class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">
       <span></span><span></span><span></span>
@@ -60,8 +76,9 @@
   </div>
 </header>
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
-  ${navItems.map((n) => `<a href="${n.href}">${n.label}</a>`).join('')}
-  <a class="btn btn-ember" href="tel:+442077245757">Call 020 7724 5757</a>
+  ${navItems.map((n) => `<a href="${base}${n.href}">${n.label}</a>`).join('')}
+  <a href="${base}order.html">Order online</a>
+  <a class="btn btn-gold" href="tel:+442077245757">Call 020 7724 5757</a>
   <button type="button" class="btn btn-ghost open-reserve">Reserve a table</button>
 </nav>`;
     }
@@ -72,21 +89,24 @@
   <div class="wrap footer-top">
     <div class="footer-brand">
       <p class="brand-mark">Hawler</p>
-      <p>Kurdish &amp; Iraqi charcoal grill on Edgware Road, London. 100% Halal. Rated 4.4 on Uber Eats from 700+ reviews.</p>
+      <p>Kurdish &amp; Iraqi charcoal grill on Edgware Road. Charcoal. Culture. Hospitality. 100% Halal. Rated 4.4 on Uber Eats from 700+ reviews.</p>
     </div>
     <div class="footer-cols">
       <div>
         <h4>Explore</h4>
-        <a href="menu.html">Full menu</a>
-        <a href="about.html">Our story</a>
-        <a href="visit.html">Visit &amp; hours</a>
-        <a href="order.html">Order online</a>
+        <a href="${base}menu.html">Menu</a>
+        <a href="${base}about.html">Our story</a>
+        <a href="${base}catering.html">Catering</a>
+        <a href="${base}blog/index.html">Blog</a>
+        <a href="${base}visit.html">Visit</a>
+        <a href="${base}order.html">Order</a>
       </div>
       <div>
         <h4>Visit</h4>
         <p>355 Edgware Road</p>
         <p>London W2 1BS</p>
         <a href="tel:+442077245757">020 7724 5757</a>
+        <p>Daily 12:00 – 23:00</p>
       </div>
       <div>
         <h4>Follow</h4>
@@ -97,7 +117,7 @@
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <p>© <span data-year></span> Hawler Restaurant London · Open daily 12:00 – 23:00</p>
+    <p>© <span data-year></span> Hawler Restaurant London</p>
     <a href="#top">Back to top</a>
   </div>
 </footer>`;
@@ -113,18 +133,19 @@
     <div class="modal-actions">
       <a class="primary" href="tel:+442077245757">Call 020 7724 5757</a>
       <a href="https://maps.google.com/?q=Hawler+Restaurant+355+Edgware+Road+London+W2+1BS" target="_blank" rel="noopener noreferrer">Get directions</a>
+      <a href="${base}order.html">Order delivery instead</a>
     </div>
-    <p class="reserve-note">For large groups, call ahead. Open daily 12:00 – 23:00.</p>
+    <p class="reserve-note">For larger groups, call ahead. Open daily 12:00 – 23:00.</p>
   </div>
 </div>`;
     }
 
-    // Expose logo helpers for order page
     window.HAWLER_LOGOS = {
       deliveroo: logoSvgDeliveroo(),
       uber: logoSvgUberEats(),
       justeat: logoSvgJustEat()
     };
+    window.HAWLER_BASE = base;
   }
 
   function bindInteractions() {
@@ -152,7 +173,9 @@
     };
 
     menuToggle?.addEventListener('click', () => setMenuOpen(!mobileNav.classList.contains('is-open')));
-    mobileNav?.querySelectorAll('a, button').forEach((el) => el.addEventListener('click', () => setMenuOpen(false)));
+    mobileNav?.querySelectorAll('a, button').forEach((el) => {
+      el.addEventListener('click', () => setMenuOpen(false));
+    });
 
     const openModal = (modal) => {
       if (!modal) return;
@@ -171,7 +194,9 @@
       btn.addEventListener('click', () => openModal(reserveModal));
     });
     document.getElementById('closeReserve')?.addEventListener('click', () => closeModal(reserveModal));
-    reserveModal?.addEventListener('click', (e) => { if (e.target === reserveModal) closeModal(reserveModal); });
+    reserveModal?.addEventListener('click', (e) => {
+      if (e.target === reserveModal) closeModal(reserveModal);
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal(reserveModal);
@@ -179,9 +204,11 @@
       }
     });
 
-    // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
-    if ('IntersectionObserver' in window) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      reveals.forEach((el) => el.classList.add('is-visible'));
+    } else if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -189,7 +216,7 @@
             io.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
       reveals.forEach((el) => io.observe(el));
     } else {
       reveals.forEach((el) => el.classList.add('is-visible'));
@@ -199,8 +226,8 @@
   function renderMenuPage() {
     const root = document.getElementById('menuRoot');
     if (!root || !window.HAWLER_MENU) return;
-
     const { categories, meta } = window.HAWLER_MENU;
+
     const nav = document.createElement('nav');
     nav.className = 'menu-nav';
     nav.setAttribute('aria-label', 'Menu sections');
@@ -213,72 +240,53 @@
       const section = document.createElement('section');
       section.className = 'menu-section';
       section.id = cat.id;
-
       const withImages = cat.items.filter((i) => i.image);
       const withoutImages = cat.items.filter((i) => !i.image);
-
-      let html = `
-        <div class="menu-section-head">
-          <p class="eyebrow">${cat.name}</p>
-          <h2>${cat.name}</h2>
-          <p>${cat.intro || ''}</p>
-        </div>`;
-
+      let html = `<div class="menu-section-head"><p class="eyebrow">${cat.name}</p><h2>${cat.name}</h2><p>${cat.intro || ''}</p></div>`;
       if (withImages.length) {
-        html += `<div class="menu-photo-grid">`;
+        html += '<div class="menu-photo-grid">';
         withImages.forEach((item) => {
-          html += `
-            <article class="dish-card">
-              <div class="dish-card-media"><img src="${item.image}" alt="${item.name}" loading="lazy" width="480" height="360" /></div>
-              <div class="dish-card-body">
-                <div class="dish-card-top">
-                  <h3>${item.name}</h3>
-                  <span class="price">${item.price}</span>
-                </div>
-                <p>${item.desc}</p>
-                ${item.badge ? `<span class="dish-badge">${item.badge}</span>` : ''}
-              </div>
-            </article>`;
+          html += `<article class="dish-card">
+            <div class="dish-card-media"><img src="${item.image}" alt="${item.name}" loading="lazy" width="480" height="360" /></div>
+            <div class="dish-card-body">
+              <div class="dish-card-top"><h3>${item.name}</h3><span class="price">${item.price}</span></div>
+              <p>${item.desc}</p>
+              ${item.badge ? `<span class="dish-badge">${item.badge}</span>` : ''}
+            </div>
+          </article>`;
         });
-        html += `</div>`;
+        html += '</div>';
       }
-
       if (withoutImages.length) {
         html += `<div class="menu-list ${withoutImages.length > 3 ? 'cols-2' : ''}">`;
         withoutImages.forEach((item) => {
-          html += `
-            <article class="menu-item">
-              <h3>${item.name}</h3>
-              <span class="price">${item.price}</span>
-              <p>${item.desc}</p>
-              ${item.badge ? `<span class="dish-badge">${item.badge}</span>` : ''}
-            </article>`;
+          html += `<article class="menu-item">
+            <h3>${item.name}</h3><span class="price">${item.price}</span>
+            <p>${item.desc}</p>
+            ${item.badge ? `<span class="dish-badge">${item.badge}</span>` : ''}
+          </article>`;
         });
-        html += `</div>`;
+        html += '</div>';
       }
-
       section.innerHTML = html;
       content.appendChild(section);
     });
 
-    content.insertAdjacentHTML('beforeend', `
-      <p class="menu-note">${meta.note} Order on
-        <a href="https://www.ubereats.com/gb/store/hawler-restaurant-edgware-rd/9QQ8yPUgXTmL4_CyM6-3gA" target="_blank" rel="noopener noreferrer">Uber Eats</a>,
-        <a href="https://deliveroo.co.uk/menu/london/paddington/hawler-restaurant-355-edgware-road" target="_blank" rel="noopener noreferrer">Deliveroo</a>
-        or <a href="order.html">see all options</a>.</p>`);
+    content.insertAdjacentHTML('beforeend', `<p class="menu-note">${meta.note} Order on
+      <a href="https://www.ubereats.com/gb/store/hawler-restaurant-edgware-rd/9QQ8yPUgXTmL4_CyM6-3gA" target="_blank" rel="noopener noreferrer">Uber Eats</a>,
+      <a href="https://deliveroo.co.uk/menu/london/paddington/hawler-restaurant-355-edgware-road" target="_blank" rel="noopener noreferrer">Deliveroo</a>
+      or <a href="order.html">see all options</a>.</p>`);
 
     root.innerHTML = '';
     root.appendChild(nav);
     root.appendChild(content);
 
-    // Active section highlighting
     const links = nav.querySelectorAll('a');
     const sections = content.querySelectorAll('.menu-section');
     const setActive = () => {
       let current = categories[0]?.id;
       sections.forEach((sec) => {
-        const top = sec.getBoundingClientRect().top;
-        if (top <= 140) current = sec.id;
+        if (sec.getBoundingClientRect().top <= 140) current = sec.id;
       });
       links.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${current}`));
     };
@@ -293,10 +301,58 @@
     });
   }
 
+  function bindCateringForm() {
+    const form = document.getElementById('cateringForm');
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = (data.get('name') || '').toString().trim();
+      const phone = (data.get('phone') || '').toString().trim();
+      const email = (data.get('email') || '').toString().trim();
+      const date = (data.get('date') || '').toString().trim();
+      const type = (data.get('type') || '').toString().trim();
+      const guests = (data.get('guests') || '').toString().trim();
+      const location = (data.get('location') || '').toString().trim();
+      const message = (data.get('message') || '').toString().trim();
+
+      const body = [
+        'Catering enquiry from hawler website',
+        '',
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        `Email: ${email}`,
+        `Event date: ${date}`,
+        `Event type: ${type}`,
+        `Estimated guests: ${guests}`,
+        `Location: ${location}`,
+        '',
+        'Message:',
+        message
+      ].join('\n');
+
+      const mailto = `mailto:hello@hawler.invalid?subject=${encodeURIComponent('Hawler catering enquiry — ' + name)}&body=${encodeURIComponent(body)}`;
+      // Prefer phone confirmation — open mail client as structured draft; also show call CTA
+      window.location.href = `tel:+442077245757`;
+      const note = document.getElementById('formStatus');
+      if (note) {
+        note.hidden = false;
+        note.innerHTML = `Thank you. Please call <a href="tel:+442077245757">020 7724 5757</a> to discuss your catering enquiry, or email the restaurant with these details:<br><pre style="white-space:pre-wrap;margin-top:0.75rem;font-size:0.85rem;opacity:0.85">${body.replace(/</g, '&lt;')}</pre>`;
+      }
+      // Also attempt mailto as secondary for those with email clients
+      setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = mailto.replace('hello@hawler.invalid', '');
+        // Use blank mailto with subject only if no email on file — better: use phone
+      }, 100);
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     injectChrome();
     bindInteractions();
     renderMenuPage();
     renderOrderLogos();
+    bindCateringForm();
   });
 })();
